@@ -1,0 +1,99 @@
+conky.config = {
+	background = false,
+	update_interval = 1.0,
+	update_interval_on_battery = 3.0,
+	total_run_times = 0,
+	use_xft = true,
+	font = 'Noto Sans:size=8',
+	uppercase = true,
+	own_window = true,
+	own_window_type = 'panel',
+	own_window_argb_visual = true,
+	own_window_argb_value = 200,
+        own_window_transparent = false,
+        own_window_hints = 'undecorated,above,skip_taskbar,skip_pager,sticky',
+        alignment = 'bottom_right',
+	minimum_height = 5,
+	gap_x = 3,
+	gap_y = 3,
+	double_buffer = true,
+	cpu_avg_samples = 2,
+	default_graph_height = 6,
+	default_graph_width = 2,
+	show_graph_scale = false,
+	show_graph_range = false,
+	draw_graph_borders = false,
+	draw_shades = false,
+	draw_borders = false,
+	draw_outline = false,
+	default_color = 'a0a0a0',
+	color1 = 'aaaaaa',
+        color2 = '3daee9',
+	color3 = 'ec5e5e',
+	if_up_strictness = 'address',
+	temperature_unit = 'fahrenheit',
+        use_spacer = none,
+}
+
+conky.text = [[
+[${if_match "${exec if ping -c 1 -n -W 1 google.com &>/dev/null; then echo UP; else echo DOWN; fi}"=="UP"}\
+${color2}UP\
+${else}\
+${color1}DOWN\
+${color}\
+${endif}]\
+${if_up bnep0}\
+${color1}bnep0${color}:[\
+${if_gw}\
+${color2}\
+${else}\
+${color3}\
+${endif}\
+${addrs bnep0}${color}]${color1}${color}[U:${upspeed bnep0}${color1}D:${color}${downspeed bnep0}]|\
+${endif}\
+${if_running openvpn}\
+${if_up tun0}\
+${color1}tun0${color}:[\
+${if_gw}\
+${color2}\
+${else}\
+${color3}\
+${endif}\
+${addrs tun0}${color}]|\
+${endif}\
+${endif}\
+${if_up wlp2s0}\
+${color1}wlp2s0[${exec /usr/sbin/iw wlp2s0 link | sed -n -r 's/.*(SSID: |signal: )(.*)/\2/gp'|sed 'N;s/\n/ /g'}${color}][\
+${wireless_essid wlp2s0}\
+${if_gw}\
+${color2}\
+${else}\
+${color3}\
+${endif}\
+${addrs wlp2s0}${color}]${color1}${color}[U:${upspeed wlp2s0}${color1}D:${color}${downspeed wlp2s0}]|\
+${endif}\
+${color1}SD:${color}${diskio /dev/nvme0n1}${diskiograph_read /dev/nvme0n1 8,10 000000 a5e12d 1024 -l -t }${diskiograph_write /dev/nvme0n1 8,10 000000 ff112d 1024 -l -t } \
+${alignr} |\
+${color1} \
+${if_match "${acpiacadapter AC}"=="on-line"}\
+${color2}\
+${else}\
+${color3}\
+${endif}\
+${battery_short BAT0}${color1} \
+${if_match ${battery_percent BAT0}>20}\
+${color}\
+${else}\
+${color3}\
+${endif}\
+${battery_bar 5,30 BAT0}${color} |\
+${color1}CPU:${color}${freq_g}G-${cpu cpu0}% \
+${color1}1:${color}${cpubar cpu1 5,20} ${color1}2:${color}${cpubar cpu2 5,20}${color} \
+${color1}3:${color}${cpubar cpu3 5,20} ${color1}4:${color}${cpubar cpu4 5,20} ${color}\
+${color1}5:${color}${cpubar cpu5 5,20} ${color1}5:${color}${cpubar cpu5 5,20} ${color}\
+${color1}6:${color}${cpubar cpu6 5,20} ${color1}7:${color}${cpubar cpu7 5,20} ${color}\
+${color1}8:${color}${cpubar cpu8 5,20}|\
+${color1}MEM:${color} ${memperc}%${membar 5,20}${color}|\
+${color1}SWAP:${color}${swapperc}%-${swap}${color}|\
+${color2}${time %c}\
+]]
